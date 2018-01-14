@@ -22,12 +22,12 @@ void setup() {
   // "post-process" the pins:
   // pins 1-8 of matrix are at pins 1-8 on teensy
   // pins 9-16 of matrix are at pins 14-21 on teensy
-  for (int i=0; i<elements(rows); i++){
+  for (unsigned int i=0; i<elements(rows); i++){
     if(rows[i] >= 9) {
       rows[i] += 5;
     }
   }
-  for (int i=0; i<elements(columns); i++){
+  for (unsigned int i=0; i<elements(columns); i++){
     if(columns[i] >= 9) {
       columns[i] += 5;
     }
@@ -35,12 +35,12 @@ void setup() {
 
 
   // initialize the "positive volt" pins
-  for(int i=0; i<elements(rows);i++) {
+  for (unsigned int i=0; i<elements(rows);i++) {
     pinMode(rows[i], OUTPUT);
     digitalWrite(rows[i], LOW);
   }
   // initialize the "programmable ground" pins
-  for(int i=0; i<elements(columns);i++) {
+  for (unsigned int i=0; i<elements(columns);i++) {
     pinMode(columns[i], OUTPUT);
     digitalWrite(columns[i], HIGH);
   }
@@ -60,29 +60,42 @@ const int heart[rowCount][columnCount] = {
   {0,0,0,0,0,0,0,0}
 };
 
+void drawPixel(int row, int column, int intensity) {
+  // currently intensity is 0 or 1
+  // safety measure: make sure 0 < intensity < 1
+  // TODO: proper intensity gradient
+  intensity = max(0, intensity);
+  intensity = min(intensity, 1);
+
+  // safety measure: PWM 25%, don't burn the leds or the teensy
+  on = slowdown * intensity;
+  off = 4 * on;
+
+
+  if(on > 0) {
+    digitalWrite(rows[row], HIGH);
+    digitalWrite(columns[column], LOW);
+    delayMicroseconds(on);
+
+    digitalWrite(rows[row], LOW);
+    digitalWrite(columns[column], HIGH);
+    delayMicroseconds(off);
+  } else {
+    delayMicroseconds(on+off);
+  }
+
+  // TODO: make sure each drawPixel always takes the same time
+  // so that each full frame takes a constant time
+}
+
 void loop() {
   // draw all pixels
   for(int row = 0; row < rowCount; row++) {
-      for(int column = 0; column < columnCount; column++) {
-        // PWM 25%
-        on = slowdown * 25;
-        off = slowdown * 100 - on;
-
-        // draw the figure
-        if(heart[row][column]) {
-          digitalWrite(rows[row], HIGH);
-          digitalWrite(columns[column], LOW);
-          delayMicroseconds(on);
-
-          digitalWrite(rows[row], LOW);
-          digitalWrite(columns[column], HIGH);
-          delayMicroseconds(off);
-        } else {
-          delayMicroseconds(on+off);
-        }
-
-      }
+    for(int column = 0; column < columnCount; column++) {
+      // draw the figure
+      drawPixel(row, column, heart[row][column]);
     }
-    tick++;
+  }
+  tick++;
 }
 
