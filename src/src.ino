@@ -6,14 +6,14 @@ int rows[] = {5, 2, 7, 1, 12, 8, 14, 9};
 // column in terms of led matrix pins, ground
 int columns[] = {13, 3, 4, 10, 6, 11, 15, 16};
 
-const int ledPinCount = elements(rows);
-const int groundPinCount = elements(columns);
+const int rowCount = elements(rows);
+const int columnCount = elements(columns);
 
 int tick = 0;
 int on;
 int off;
 
-int slowdown = 100;
+int slowdown = 1;
 // low slowdown = entire grid looks "on",
 // higher slowdown = individual led progression visible
 // try values between 1 and 1000
@@ -47,20 +47,40 @@ void setup() {
 
 }
 
+const int heart[rowCount][columnCount] = {
+  // note: upside down here in editor
+  // because 0,0 is bottom left of the grid
+  {0,0,0,0,0,0,0,0},
+  {0,0,0,1,1,0,0,0},
+  {0,0,1,1,1,1,0,0},
+  {0,1,1,1,1,1,1,0},
+  {1,1,1,1,1,1,1,1},
+  {1,1,1,1,1,1,1,1},
+  {0,1,1,0,0,1,1,0},
+  {0,0,0,0,0,0,0,0}
+};
+
 void loop() {
-  for(int ledPin = 0; ledPin < ledPinCount; ledPin++) {
-      for(int groundPin = 0; groundPin < groundPinCount; groundPin++) {
-        // PWM 10%
-        on = slowdown * 10;
+  // draw all pixels
+  for(int row = 0; row < rowCount; row++) {
+      for(int column = 0; column < columnCount; column++) {
+        // PWM 25%
+        on = slowdown * 25;
         off = slowdown * 100 - on;
 
-        digitalWrite(rows[ledPin], HIGH);
-        digitalWrite(columns[groundPin], LOW);
-        delayMicroseconds(on);
+        // draw the figure
+        if(heart[row][column]) {
+          digitalWrite(rows[row], HIGH);
+          digitalWrite(columns[column], LOW);
+          delayMicroseconds(on);
 
-        digitalWrite(rows[ledPin], LOW);
-        digitalWrite(columns[groundPin], HIGH);
-        delayMicroseconds(off);
+          digitalWrite(rows[row], LOW);
+          digitalWrite(columns[column], HIGH);
+          delayMicroseconds(off);
+        } else {
+          delayMicroseconds(on+off);
+        }
+
       }
     }
     tick++;
