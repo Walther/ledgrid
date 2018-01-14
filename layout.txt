@@ -1,0 +1,168 @@
+# Led matrix pinouts
+
+positive lead to first pin number
+gnd to second pin number
+
+pinout: pin 1 at bottom left, 8 at bottom right
+        pin 9 at top right, 16 at top left
+        ==>  U shape!
+
+how to read this file: first pin numbers, then the coords of the led that lights up
+
+pin 1,2: none
+pin 1,3: 2,4
+pin 1,4: 3,4
+pin 1,5: none
+pin 1,6: 5,4
+pin 1,7: none
+pin 1,8: none
+
+pin 1,9: none
+pin 1,10: 4,4
+pin 1,11: 6,4
+pin 1,12: none
+pin 1,13: 1,4
+pin 1,14: none
+pin 1,15: 7,4
+pin 1,16: 8,4
+
+
+pin 2,1: none
+pin 2,3: 2,2
+pin 2,4: 3,2
+pin 2,5: none
+pin 2,6: 5,2
+pin 2,7: none
+pin 2,8: none
+
+pin 2,9: none
+pin 2,10: 4,2
+pin 2,11: 6,2
+pin 2,12: none
+pin 2,13: 1,2
+pin 2,14: none
+pin 2,15: 7,2
+pin 2,16: 8,2
+
+
+pin 3,*: none
+
+pin 4,*: none
+
+pin 5,1: none
+pin 5,2: none
+pin 5,3: 2,1
+pin 5,4: 3,1
+pin 5,6: 5,1
+pin 5,7: none
+pin 5,7: none
+
+pin 5,9: none
+pin 5,10: 4,1
+pin 5,11: 6,1
+pin 5,12: none
+pin 5,13: 1,1
+pin 5,14: none
+pin 5,15: 7,1
+pin 5,16: 8,1
+
+pin 6,*: none
+
+pin 7,1: none
+pin 7,2: none
+pin 7,3: 2,3
+pin 7,4: 3,3
+pin 7,5: none
+pin 7,6: 5,3
+pin 7,8: none
+
+pin 7,9: none
+pin 7,10: 4,3
+pin 7,11: 6,3
+pin 7,12: none
+pin 7,13: 1,3
+pin 7,14: none
+pin 7,15: 7,3
+pin 7,16: 8,3
+
+
+pin 8,1: none
+pin 8,2: none
+pin 8,3: 2,6
+pin 8,4: 3,6
+pin 8,5: none
+pin 8,6: 5,6
+pin 8,7: none
+
+pin 8,9: none
+pin 8,10: 4,6
+pin 8,11: 6,6
+pin 8,12: none
+pin 8,13: 1,6
+pin 8,14: none
+pin 8,15: 7,6
+pin 8,16: 8,6
+
+
+pin 9,1: none
+pin 9,2: none
+pin 9,3: 2,8
+pin 9,4: 3,8
+pin 9,5: none
+pin 9,6: 5,8
+pin 9,7: none
+pin 9,8: none
+
+pin 9,10: 4,8
+pin 9,11: 6,8
+pin 9,12: none
+pin 9,13: 1,8
+pin 9,14: none
+pin 9,15: 7,8
+pin 9,16: 8,8
+
+
+pin 10,*: none
+
+pin 11,*: none
+
+pin 12,1: none
+pin 12,2: none
+pin 12,3: 2,5
+pin 12,4: 3,5
+pin 12,5: none
+pin 12,6: 5,5
+pin 12,7: none
+pin 12,8: none
+
+pin 12,9: none
+pin 12,10: 4,5
+pin 12,11: 6,5
+pin 12,13: 1,5
+pin 12,14: none
+pin 12,15: 7,5
+pin 12,16: 8,5
+
+
+pin 13,*: none
+
+pin 14,1: none
+pin 14,2: none
+pin 14,3: 2,7
+pin 14,4: 3,7
+pin 14,5: none
+pin 14,6: 5,7
+pin 14,7: none
+pin 14,8: none
+
+pin 14,9: none
+pin 14,10: 4,7
+pin 14,11: 6,7
+pin 14,12: none
+pin 14,13: 1,7
+pin 14,15: 7,7
+pin 14,16: 8,7
+
+pin 15,*: none
+
+pin 16,*: none
