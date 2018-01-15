@@ -1,22 +1,18 @@
+#include <Arduino.h>
+
 #define elements(x)  (sizeof(x) / sizeof((x)[0]))
-// array element counter
 
 // row in terms of led matrix pins, positive
-int rows[] = {5, 2, 7, 1, 12, 8, 14, 9};
+unsigned int rows[] = {5, 2, 7, 1, 12, 8, 14, 9};
 // column in terms of led matrix pins, ground
-int columns[] = {13, 3, 4, 10, 6, 11, 15, 16};
+unsigned int columns[] = {13, 3, 4, 10, 6, 11, 15, 16};
 
 const int rowCount = elements(rows);
 const int columnCount = elements(columns);
 
-int tick = 0;
-int on;
-int off;
-
-int slowdown = 1;
-// low slowdown = entire grid looks "on",
-// higher slowdown = individual led progression visible
-// try values between 1 and 1000
+unsigned int tick = 0;
+unsigned int on;
+unsigned int off;
 
 void setup() {
   // "post-process" the pins:
@@ -61,16 +57,20 @@ const int heart[rowCount][columnCount] = {
 };
 
 void drawPixel(int row, int column, int intensity) {
-  // currently intensity is 0 or 1
-  // safety measure: make sure 0 < intensity < 1
+  // safety measure: make sure 0 < intensity < 64
   // TODO: proper intensity gradient
   intensity = max(0, intensity);
-  intensity = min(intensity, 1);
+  intensity = min(64, intensity);
 
-  // safety measure: PWM 25%, don't burn the leds or the teensy
-  on = slowdown * intensity;
-  off = 4 * on;
+  // ASSUMPTION: 8x8 = 64 leds, aka single panel only
+  // ASSUMPTION: 1 frame per second
+  // time per pixel = 0.015625 seconds = 15625 microseconds
+  // Factors of 15625: 5 x 3125, 25 x 625, 125 x 125
+  // ASSUMPTION: 125 fps
+  // time per pixel = 125 microseconds. Convenient!
 
+  on = intensity;
+  off = 125 - on;
 
   if(on > 0) {
     digitalWrite(rows[row], HIGH);
@@ -83,17 +83,16 @@ void drawPixel(int row, int column, int intensity) {
   } else {
     delayMicroseconds(on+off);
   }
-
-  // TODO: make sure each drawPixel always takes the same time
-  // so that each full frame takes a constant time
 }
 
 void loop() {
   // draw all pixels
   for(int row = 0; row < rowCount; row++) {
     for(int column = 0; column < columnCount; column++) {
-      // draw the figure
-      drawPixel(row, column, heart[row][column]);
+      // draw a heart
+      //drawPixel(row, column, heart[row][column]);
+      // draw a gradient
+      drawPixel(row, column, row*column +1);
     }
   }
   tick++;
