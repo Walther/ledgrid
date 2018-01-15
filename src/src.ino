@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <vector>
 
 #define elements(x)  (sizeof(x) / sizeof((x)[0]))
 
@@ -56,9 +57,26 @@ const int heart[rowCount][columnCount] = {
   {0,0,0,0,0,0,0,0}
 };
 
+const int square[rowCount][columnCount] = {
+  {0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0},
+  {0,0,1,1,1,1,0,0},
+  {0,0,1,1,1,1,0,0},
+  {0,0,1,1,1,1,0,0},
+  {0,0,1,1,1,1,0,0},
+  {0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0},
+};
+
+auto matrixRotate(int x, int y, float radians) {
+  float x2 = x * cos(radians) - y * sin(radians);
+  float y2 = x * sin(radians) + y * cos(radians);
+
+  return std::vector<float> {x2, y2};
+}
+
 void drawPixel(int row, int column, int intensity) {
   // safety measure: make sure 0 < intensity < 64
-  // TODO: proper intensity gradient
   intensity = max(0, intensity);
   intensity = min(64, intensity);
 
@@ -72,7 +90,15 @@ void drawPixel(int row, int column, int intensity) {
   on = intensity;
   off = 125 - on;
 
-  if(on > 0) {
+  if
+  (
+    on > 0
+    // safety measure: draw only existing leds
+    && row < rowCount
+    && row >= 0
+    && column < columnCount
+    && column >= 0
+  ) {
     digitalWrite(rows[row], HIGH);
     digitalWrite(columns[column], LOW);
     delayMicroseconds(on);
@@ -90,9 +116,23 @@ void loop() {
   for(int row = 0; row < rowCount; row++) {
     for(int column = 0; column < columnCount; column++) {
       // draw a heart
-      //drawPixel(row, column, heart[row][column]);
+      //drawPixel(row, column, 64 * heart[row][column]);
+
       // draw a gradient
-      drawPixel(row, column, row*column +1);
+      //drawPixel(row, column, row*column +1);
+
+      // draw a square
+      //drawPixel(row, column, 64 * square[row][column]);
+
+      // draw a rotating square
+      // note the -4 and +4 for moving the square around
+      std::vector<float> newCoords = matrixRotate(row-4, column-4, 0.05 * tick);
+
+      drawPixel(
+        (int) floor(4+ newCoords[0]),
+        (int) floor(4+ newCoords[1]),
+        64 * square[row][column]
+      );
     }
   }
   tick++;
