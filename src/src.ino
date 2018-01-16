@@ -1,84 +1,93 @@
 #include <Arduino.h>
+#include <cstdint>
 #include <vector>
 
-#define elements(x)  (sizeof(x) / sizeof((x)[0]))
+#include "trig.h"
+
+#define elements(x) (sizeof(x) / sizeof((x)[0]))
 
 // row in terms of led matrix pins, positive
-unsigned int rows[] = {5, 2, 7, 1, 12, 8, 14, 9};
+uint32_t rows[] = {5, 2, 7, 1, 12, 8, 14, 9};
 // column in terms of led matrix pins, ground
-unsigned int columns[] = {13, 3, 4, 10, 6, 11, 15, 16};
+uint32_t columns[] = {13, 3, 4, 10, 6, 11, 15, 16};
 
-const int rowCount = elements(rows);
-const int columnCount = elements(columns);
+const uint32_t rowCount = elements(rows);
+const uint32_t columnCount = elements(columns);
 
-unsigned int tick = 0;
-unsigned int on;
-unsigned int off;
+uint32_t tick = 0;
+uint32_t on;
+uint32_t off;
 
-void setup() {
+void setup()
+{
   // "post-process" the pins:
   // pins 1-8 of matrix are at pins 1-8 on teensy
   // pins 9-16 of matrix are at pins 14-21 on teensy
-  for (unsigned int i=0; i<elements(rows); i++){
-    if(rows[i] >= 9) {
+  for (uint32_t i = 0; i < rowCount; i++)
+  {
+    if (rows[i] >= 9)
+    {
       rows[i] += 5;
     }
   }
-  for (unsigned int i=0; i<elements(columns); i++){
-    if(columns[i] >= 9) {
+  for (uint32_t i = 0; i < columnCount; i++)
+  {
+    if (columns[i] >= 9)
+    {
       columns[i] += 5;
     }
   }
 
-
   // initialize the "positive volt" pins
-  for (unsigned int i=0; i<elements(rows);i++) {
+  for (uint32_t i = 0; i < rowCount; i++)
+  {
     pinMode(rows[i], OUTPUT);
     digitalWrite(rows[i], LOW);
   }
   // initialize the "programmable ground" pins
-  for (unsigned int i=0; i<elements(columns);i++) {
+  for (uint32_t i = 0; i < columnCount; i++)
+  {
     pinMode(columns[i], OUTPUT);
     digitalWrite(columns[i], HIGH);
   }
-
 }
 
 const int heart[rowCount][columnCount] = {
-  // note: upside down here in editor
-  // because 0,0 is bottom left of the grid
-  {0,0,0,0,0,0,0,0},
-  {0,0,0,1,1,0,0,0},
-  {0,0,1,1,1,1,0,0},
-  {0,1,1,1,1,1,1,0},
-  {1,1,1,1,1,1,1,1},
-  {1,1,1,1,1,1,1,1},
-  {0,1,1,0,0,1,1,0},
-  {0,0,0,0,0,0,0,0}
-};
+    // note: upside down here in editor
+    // because 0,0 is bottom left of the grid
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 1, 1, 0, 0, 0},
+    {0, 0, 1, 1, 1, 1, 0, 0},
+    {0, 1, 1, 1, 1, 1, 1, 0},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {0, 1, 1, 0, 0, 1, 1, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0}};
 
 const int square[rowCount][columnCount] = {
-  {0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0},
-  {0,0,1,1,1,1,0,0},
-  {0,0,1,1,1,1,0,0},
-  {0,0,1,1,1,1,0,0},
-  {0,0,1,1,1,1,0,0},
-  {0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 1, 1, 1, 0, 0},
+    {0, 0, 1, 1, 1, 1, 0, 0},
+    {0, 0, 1, 1, 1, 1, 0, 0},
+    {0, 0, 1, 1, 1, 1, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
 };
 
-auto matrixRotate(int x, int y, float radians) {
+auto matrixRotate(int32_t x, int32_t y, float radians)
+{
   float x2 = x * cos(radians) - y * sin(radians);
   float y2 = x * sin(radians) + y * cos(radians);
 
-  return std::vector<float> {x2, y2};
+  return std::vector<float>{x2, y2};
 }
 
-void drawPixel(int row, int column, int intensity) {
-  // safety measure: make sure 0 < intensity < 64
+void drawPixel(uint32_t row, uint32_t column, uint32_t intensity)
+{
+  // safety measure: make sure 0 < intensity < 125
   intensity = max(0, intensity);
-  intensity = min(64, intensity);
+  intensity = min(125, intensity);
 
   // ASSUMPTION: 8x8 = 64 leds, aka single panel only
   // ASSUMPTION: 1 frame per second
@@ -90,15 +99,11 @@ void drawPixel(int row, int column, int intensity) {
   on = intensity;
   off = 125 - on;
 
-  if
-  (
-    on > 0
-    // safety measure: draw only existing leds
-    && row < rowCount
-    && row >= 0
-    && column < columnCount
-    && column >= 0
-  ) {
+  if (
+      on > 0
+      // safety measure: draw only existing leds
+      && row < rowCount && row >= 0 && column < columnCount && column >= 0)
+  {
     digitalWrite(rows[row], HIGH);
     digitalWrite(columns[column], LOW);
     delayMicroseconds(on);
@@ -106,15 +111,20 @@ void drawPixel(int row, int column, int intensity) {
     digitalWrite(rows[row], LOW);
     digitalWrite(columns[column], HIGH);
     delayMicroseconds(off);
-  } else {
-    delayMicroseconds(on+off);
+  }
+  else
+  {
+    delayMicroseconds(on + off);
   }
 }
 
-void loop() {
+void loop()
+{
   // draw all pixels
-  for(int row = 0; row < rowCount; row++) {
-    for(int column = 0; column < columnCount; column++) {
+  for (uint32_t row = 0; row < rowCount; row++)
+  {
+    for (uint32_t column = 0; column < columnCount; column++)
+    {
       // draw a heart
       //drawPixel(row, column, 64 * heart[row][column]);
 
@@ -126,15 +136,13 @@ void loop() {
 
       // draw a rotating square
       // note the -4 and +4 for moving the square around
-      std::vector<float> newCoords = matrixRotate(row-4, column-4, 0.05 * tick);
+      std::vector<float> newCoords = matrixRotate(row - 4, column - 4, 0.05 * tick);
 
       drawPixel(
-        (int) floor(4+ newCoords[0]),
-        (int) floor(4+ newCoords[1]),
-        64 * square[row][column]
-      );
+          (uint32_t)floor(4 + newCoords[0]),
+          (uint32_t)floor(4 + newCoords[1]),
+          125 * square[row][column]);
     }
   }
   tick++;
 }
-
