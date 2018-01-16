@@ -136,11 +136,11 @@ void loop()
 
       // draw a rotating square
       // note the -4 and +4 for moving the square around
-      std::vector<int32_t> newCoords = matrixRotate(row - 4, column - 4, 0.1 * tick);
+      std::vector<int32_t> newCoords = matrixRotate(row, column, tick);
 
       drawPixel(
-          (uint32_t)(4 + newCoords[0]),
-          (uint32_t)(4 + newCoords[1]),
+          (uint32_t)(newCoords[0]),
+          (uint32_t)(newCoords[1]),
           125 * square[row][column]);
     }
   }
