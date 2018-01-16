@@ -87,7 +87,18 @@ const int line[rowCount][columnCount] = {
     {0, 0, 0, 0, 0, 0, 0, 0},
 };
 
-uint32_t framebuffer[rowCount][columnCount] = {
+const uint32_t clear[rowCount][columnCount] = {
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+};
+
+int32_t framebuffer[rowCount][columnCount] = {
     {0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
@@ -168,6 +179,7 @@ void loop()
       }
     }
   }
+  // draw all the pixels
   for (uint32_t row = 0; row < rowCount; row++)
   {
     for (uint32_t column = 0; column < columnCount; column++)
@@ -175,5 +187,8 @@ void loop()
       drawPixel(row, column, framebuffer[row][column]);
     }
   }
+  // clear the framebuffer
+  memcpy(framebuffer, clear, sizeof(clear));
+
   tick++;
 }
