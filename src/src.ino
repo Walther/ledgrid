@@ -62,7 +62,8 @@ const int heart[rowCount][columnCount] = {
     {1, 1, 1, 1, 1, 1, 1, 1},
     {1, 1, 1, 1, 1, 1, 1, 1},
     {0, 1, 1, 0, 0, 1, 1, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0}};
+    {0, 0, 0, 0, 0, 0, 0, 0},
+};
 
 const int square[rowCount][columnCount] = {
     {0, 0, 0, 0, 0, 0, 0, 0},
@@ -71,6 +72,28 @@ const int square[rowCount][columnCount] = {
     {0, 0, 1, 1, 1, 1, 0, 0},
     {0, 0, 1, 1, 1, 1, 0, 0},
     {0, 0, 1, 1, 1, 1, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+};
+
+const int line[rowCount][columnCount] = {
+    {1, 1, 1, 1, 1, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+};
+
+uint32_t framebuffer[rowCount][columnCount] = {
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0},
 };
@@ -120,7 +143,7 @@ void drawPixel(uint32_t row, uint32_t column, uint32_t intensity)
 
 void loop()
 {
-  // draw all pixels
+  // draw framebuffer
   for (uint32_t row = 0; row < rowCount; row++)
   {
     for (uint32_t column = 0; column < columnCount; column++)
@@ -137,11 +160,14 @@ void loop()
       // draw a rotating square
       // note the -4 and +4 for moving the square around
       std::vector<int32_t> newCoords = matrixRotate(row, column, tick);
-
-      drawPixel(
-          (uint32_t)(newCoords[0]),
-          (uint32_t)(newCoords[1]),
-          125 * square[row][column]);
+      framebuffer[newCoords[0]][newCoords[1]] = 125 * square[row][column];
+    }
+  }
+  for (uint32_t row = 0; row < rowCount; row++)
+  {
+    for (uint32_t column = 0; column < columnCount; column++)
+    {
+      drawPixel(row, column, framebuffer[row][column]);
     }
   }
   tick++;
