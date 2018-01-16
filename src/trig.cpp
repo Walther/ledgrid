@@ -34,7 +34,7 @@ int32_t fastSin(int32_t degrees)
   else if (degrees < 180)
   {
     // second quadrant
-    return sinTableMax - sinTable[degrees - 90];
+    return sinTable[180 - degrees];
   }
   else if (degrees < 270)
   {
@@ -44,7 +44,7 @@ int32_t fastSin(int32_t degrees)
   else if (degrees < 360)
   {
     // fourth quadrant
-    return -(sinTableMax - sinTable[degrees - 270]);
+    return -sinTable[180 - (degrees - 180)];
   }
   else if (degrees >= 360)
   {
