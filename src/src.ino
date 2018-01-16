@@ -75,12 +75,12 @@ const int square[rowCount][columnCount] = {
     {0, 0, 0, 0, 0, 0, 0, 0},
 };
 
-auto matrixRotate(int32_t x, int32_t y, float radians)
+auto matrixRotate(int32_t x, int32_t y, int degrees)
 {
-  float x2 = x * cos(radians) - y * sin(radians);
-  float y2 = x * sin(radians) + y * cos(radians);
+  int32_t x2 = xcos(x, degrees) - xsin(y, degrees);
+  int32_t y2 = xsin(x, degrees) + xcos(y, degrees);
 
-  return std::vector<float>{x2, y2};
+  return std::vector<int32_t>{x2, y2};
 }
 
 void drawPixel(uint32_t row, uint32_t column, uint32_t intensity)
@@ -136,11 +136,11 @@ void loop()
 
       // draw a rotating square
       // note the -4 and +4 for moving the square around
-      std::vector<float> newCoords = matrixRotate(row - 4, column - 4, 0.05 * tick);
+      std::vector<int32_t> newCoords = matrixRotate(row - 4, column - 4, 0.1 * tick);
 
       drawPixel(
-          (uint32_t)floor(4 + newCoords[0]),
-          (uint32_t)floor(4 + newCoords[1]),
+          (uint32_t)(4 + newCoords[0]),
+          (uint32_t)(4 + newCoords[1]),
           125 * square[row][column]);
     }
   }

@@ -61,3 +61,19 @@ int32_t fastCos(int32_t degrees)
 {
   return fastSin(90 - degrees);
 }
+
+/**
+ * x times sin(degrees), in fast integer math
+*/
+int32_t xsin(int32_t x, int32_t degrees)
+{
+  return (x * fastSin(degrees)) / 65535;
+}
+
+/**
+ * x times cos(degrees), in fast integer math
+*/
+int32_t xcos(int32_t x, int32_t degrees)
+{
+  return (x * fastCos(degrees)) / 65535;
+}
