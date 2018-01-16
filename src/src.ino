@@ -160,7 +160,12 @@ void loop()
       // draw a rotating square
       // note the -4 and +4 for moving the square around
       std::vector<int32_t> newCoords = matrixRotate(row, column, tick);
-      framebuffer[newCoords[0]][newCoords[1]] = 125 * square[row][column];
+      if (
+          newCoords[0] >= 0 && newCoords[0] < rowCount && newCoords[1] >= 0 && newCoords[1] < columnCount)
+      {
+
+        framebuffer[newCoords[0]][newCoords[1]] = 125 * square[row][column];
+      }
     }
   }
   for (uint32_t row = 0; row < rowCount; row++)
