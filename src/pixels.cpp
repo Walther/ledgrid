@@ -38,20 +38,21 @@ void Pixels::initialize(uint32_t pinRows[8], uint32_t pinColumns[8])
 {
   memcpy(rows, pinRows, sizeof(pinRows) * 8);
   memcpy(columns, pinColumns, sizeof(pinColumns) * 8);
-  Serial.print("rows: ");
-  for (int i = 0; i < 8; i++)
-  {
-    Serial.print(rows[i]);
-    Serial.print(",");
-  }
-  Serial.print("\n");
-  Serial.print("columns: ");
-  for (int i = 0; i < 8; i++)
-  {
-    Serial.print(columns[i]);
-    Serial.print(",");
-  }
-  Serial.print("\n");
+  // Serial.print("rows: ");
+  // for (int i = 0; i < 8; i++)
+  // {
+  //   Serial.print(rows[i]);
+  //   Serial.print(",");
+  // }
+  // Serial.print("\n");
+  // Serial.print("columns: ");
+  // for (int i = 0; i < 8; i++)
+  // {
+  //   Serial.print(columns[i]);
+  //   Serial.print(",");
+  // }
+  // Serial.print("\n");
+  clear();
 }
 
 void Pixels::drawPixel(uint32_t row, uint32_t column, uint32_t intensity)
