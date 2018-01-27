@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <cstdint>
-#include "pixels.h"
 
 uint32_t clear_16_16[16][16] = {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -21,53 +20,53 @@ uint32_t clear_16_16[16][16] = {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 };
 
-uint32_t framebuffer_16_16[16][16] = {
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+class Framebuffer_16_16
+{
+  uint32_t data[16][16] = {
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+  };
+
+public:
+  void clear();
+  uint32_t getIntensity(uint32_t row, uint32_t column);
+  void setIntensity(uint32_t row, uint32_t column, uint32_t intensity);
 };
 
-void clearFramebuffer(uint32_t framebuffer_16_16[16][16])
+void Framebuffer_16_16::clear()
 {
-  memcpy(framebuffer_16_16, clear_16_16, sizeof(clear_16_16));
-}
+  memcpy(data, clear_16_16, sizeof(clear_16_16));
+};
 
-uint32_t getIntensity(uint32_t framebuffer_16_16[16][16], uint32_t row, uint32_t column)
+uint32_t Framebuffer_16_16::getIntensity(uint32_t row, uint32_t column)
 {
   // crude antialiasing
   uint32_t averageIntensity =
-      framebuffer_16_16[row * 2][column * 2] +
-      framebuffer_16_16[row * 2 + 1][column * 2] +
-      framebuffer_16_16[row * 2][column * 2 + 1] +
-      framebuffer_16_16[row * 2 + 1][column * 2 + 1] / 4;
+      (data[row * 2][column * 2] +
+       data[row * 2 + 1][column * 2] +
+       data[row * 2][column * 2 + 1] +
+       data[row * 2 + 1][column * 2 + 1]) /
+      4;
+  //Serial.println(averageIntensity);
   return averageIntensity;
-}
+};
 
-void setIntensity(uint32_t framebuffer_16_16[16][16], uint32_t row, uint32_t column, uint32_t intensity)
+void Framebuffer_16_16::setIntensity(uint32_t row, uint32_t column, uint32_t intensity)
 {
-  framebuffer_16_16[row][column] = intensity;
-}
-
-void drawFramebuffer(uint32_t framebuffer_16_16[16][16])
-{
-  for (uint32_t row = 0; row < 16; row++)
-  {
-    for (uint32_t column = 0; column < 16; column++)
-    {
-      drawPixel(row, column, getIntensity(framebuffer_16_16, row, column));
-    }
-  }
-}
+  data[row][column] = intensity;
+  //Serial.println(data[row][column]);
+};
